@@ -153,7 +153,13 @@ uploadserver <- function(input, output, session, dms_token) {
 downloadserver <- function(input, output, session, dms_token) {
   
   shiny::observeEvent(input$btn_purchaseAdj_query,{
-    sql = "select * from rds_lc_ods_purchase_priceAdjustment"
+    sql =  paste0("SELECT [FmaterialId]  as 图号
+      ,[FmaterialName] as 物料名称
+      ,[FLineModel]  as 规格型号
+      ,[FUnit] as 计量单位
+      ,[FPrice]  as  采购价
+      ,[Fupdatetime] as 调价日期
+  FROM [rds_lc_ods_purchase_priceAdjustment]")
     
     print(sql)
     #查询到调价单数据
