@@ -21,7 +21,7 @@ viewserver <- function(input, output, session, dms_token) {
                         {
                           # 获取文件路径
                           file_name = var_file_export_baseInfo()
-                          
+                          #由于数据类型的问题,因此需要添加数据类型转换
                           data_excel <-
                             readxl::read_excel(
                               file_name,
@@ -31,14 +31,22 @@ viewserver <- function(input, output, session, dms_token) {
                                 "text",
                                 "text",
                                 "text",
-                                "numeric",
-                                "numeric",
-                                "numeric",
-                                "numeric",
-                                "numeric",
-                                "numeric"
+                                "text",
+                                "text",
+                                "text",
+                                "text",
+                                "text",
+                                "text"
                               )
+                              
                             )
+                          data_excel$`原价格` <- as.numeric(data_excel$`原价格`)
+                          data_excel$`用铜量(KG)` <- as.numeric(data_excel$`用铜量(KG)`)
+                          data_excel$`原铜价基准` <- as.numeric(data_excel$`原铜价基准`)
+                          data_excel$`现基准铜价` <- as.numeric(data_excel$`现基准铜价`)
+                          data_excel$`现价格` <- as.numeric(data_excel$`现价格`)
+                          data_excel$`涨价` <- as.numeric(data_excel$`涨价`)
+                          
                           
                           data_excel = as.data.frame(data_excel)
                           
@@ -81,17 +89,26 @@ uploadserver <- function(input, output, session, dms_token) {
                               "text",
                               "text",
                               "text",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric",
-                              "numeric"
+                              "text",
+                              "text",
+                              "text",
+                              "text",
+                              "text",
+                              "text"
                             )
+                            
                           )
+                        data_excel$`原价格` <- as.numeric(data_excel$`原价格`)
+                        data_excel$`用铜量(KG)` <- as.numeric(data_excel$`用铜量(KG)`)
+                        data_excel$`原铜价基准` <- as.numeric(data_excel$`原铜价基准`)
+                        data_excel$`现基准铜价` <- as.numeric(data_excel$`现基准铜价`)
+                        data_excel$`现价格` <- as.numeric(data_excel$`现价格`)
+                        data_excel$`涨价` <- as.numeric(data_excel$`涨价`)
                         
                         data_excel = as.data.frame(data_excel)
+                        
                         data_excel = tsdo::na_standard(data_excel)
+                        
                         
                         columnsname = c('物料号',	'描述', '线型',	'单位', '现价格')
                         data_excel = data_excel[, columnsname]
@@ -103,13 +120,14 @@ uploadserver <- function(input, output, session, dms_token) {
                                               'FUnit',
                                               'FPrice',
                                               'FUploadDate')
+                        print('bug1')
                         
                         # 写入中间表
                         tsda::db_writeTable2(
                           token = dms_token,
                           table_name = 'rds_lc_src_purchase_priceAdjustment_input',
                           r_object = data_excel,
-                          append = FALSE
+                          append = TRUE
                         )
                         
                         # 删除中间表中已存在与src的物料
