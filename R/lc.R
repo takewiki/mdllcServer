@@ -170,14 +170,30 @@ uploadserver <- function(input, output, session, dms_token) {
 #' @examples downloadserver()
 downloadserver <- function(input, output, session, dms_token) {
   
+  
+  var_txt_purchasePriceAdj_chartNo <- tsui::var_text('txt_purchasePriceAdj_chartNo')
   shiny::observeEvent(input$btn_purchaseAdj_query,{
-    sql =  paste0("SELECT [FmaterialId]  as 图号
+    FChartNumber = var_txt_purchasePriceAdj_chartNo()
+    if(FChartNumber==''){
+      sql =  paste0("SELECT [FmaterialId]  as 图号
       ,[FmaterialName] as 物料名称
       ,[FLineModel]  as 规格型号
       ,[FUnit] as 计量单位
       ,[FPrice]  as  采购价
       ,[Fupdatetime] as 调价日期
   FROM [rds_lc_ods_purchase_priceAdjustment]")
+    }else{
+      sql =  paste0("SELECT [FmaterialId]  as 图号
+      ,[FmaterialName] as 物料名称
+      ,[FLineModel]  as 规格型号
+      ,[FUnit] as 计量单位
+      ,[FPrice]  as  采购价
+      ,[Fupdatetime] as 调价日期
+  FROM [rds_lc_ods_purchase_priceAdjustment]
+  where FmaterialId = '",FChartNumber,"'
+                    ")
+    }
+    
     
     print(sql)
     #查询到调价单数据
