@@ -16,7 +16,7 @@
 viewserver <- function(input, output, session, dms_token) {
   var_file_export_baseInfo = tsui::var_file('uploadfile')
   
-  shiny::observe({
+
     shiny::observeEvent(input$btn_view,
                         {
                           # 获取文件路径
@@ -49,7 +49,7 @@ viewserver <- function(input, output, session, dms_token) {
                           tsui::run_dataTable2(id = 'view_data', data = data_excel)
                           
                         })
-  })
+
 }
 
 
