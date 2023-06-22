@@ -151,14 +151,24 @@ uploadserver <- function(input, output, session, dms_token) {
 #'
 #' @examples downloadserver()
 downloadserver <- function(input, output, session, dms_token) {
-  sql = "select * from rds_lc_ods_purchase_priceAdjustment"
   
-  print(sql)
-  data = tsda::sql_select2(dms_token, sql)
+  shiny::observeEvent(input$btn_purchaseAdj_query,{
+    sql = "select * from rds_lc_ods_purchase_priceAdjustment"
+    
+    print(sql)
+    #查询到调价单数据
+    data = tsda::sql_select2(dms_token, sql)
+    #
+    #显示数据
+    tsui::run_dataTable2(id = 'view_data', data = data)
+    #下载数据
+    
+    tsui::run_download_xlsx(id = 'btn_download',
+                            data = data ,
+                            filename = '最新采购调价单.xlsx')
+    
+  })
   
-  tsui::run_download_xlsx(id = 'btn_download',
-                          data = data ,
-                          filename = '最新采购调价单.xlsx')
   
   
 }
